@@ -1,4 +1,4 @@
-### Hyperion
+# Hyperion
 
 > For the moment, Hyperion is only available as a website! <br>
 > https://obf.plague.fun **<= Feel free to use it ;)**<br>
