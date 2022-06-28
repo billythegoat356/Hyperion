@@ -27,6 +27,17 @@ You can also use the <a href="https://obf.plague.fun" target="_blank">web</a> ve
 
 -----
 
+### <p align="center">📀 Dependencies 📀</p>
+
+<p align="center"><strong><i>In order for the program to work, you have to install these ressources:</i></strong</p>
+
+<br><br>
+* <a href="https://www.python.org/ftp/python/3.9.13/python-3.9.13-amd64.exe">Python3</a>
+* `pip install -U -r requirements.txt`
+<br><br>
+
+-----
+
 ### <p align="center">📋 Examples 📋</p>
 
 <br><br>
@@ -91,17 +102,6 @@ if __name__ == '__main__':
         elif 400153 > 1156980:
             _calculate._statistics(CallFunction = _calculate.Product + 20559)
 ```
-
------
-
-### <p align="center">📀 Dependencies 📀</p>
-
-<p align="center"><strong><i>In order for the program to work, you have to install these ressources:</i></strong</p>
-
-<br><br>
-* <a href="https://www.python.org/ftp/python/3.9.13/python-3.9.13-amd64.exe">Python3</a>
-* `pip install -r requirements.txt`
-<br><br>
 
 -----
 
