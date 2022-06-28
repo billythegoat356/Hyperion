@@ -113,6 +113,8 @@ if __name__ == '__main__':
 <br>
 <strong>+ Obfuscate source code with more than 10 layers</strong>
 <br>
+<strong>+ The size of the file stays very small, because it is compressed with `zlib`</strong>
+<br>
 
 <p align="right">
 <img src="https://repository-images.githubusercontent.com/499265392/cdeb5cae-691b-49c7-9f65-56fc01d54813" width="250", height="250">
