@@ -11,8 +11,9 @@
 <br><br>
 <p align="center">
 <strong>
-Hyperion is the most powerful fully Python obfuscator for Python scripts, developped by <a href="https://github.com/billythegoat356">billythegoat356</a> (me) and <a href="https://github.com/CSM-BlueRed">BlueRed</a>.
-<br>
+Hyperion is the most powerful fully Python obfuscator for Python scripts,
+<br>developped by <a href="https://github.com/billythegoat356">billythegoat356</a> (me) and <a href="https://github.com/CSM-BlueRed">BlueRed</a>.
+<br><br>
 It allows you to obfuscate your script with more than 10 layers, while keeping it
 <br>
 very compact (one file) and executable on any os/python version.
