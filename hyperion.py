@@ -375,12 +375,58 @@ except:
         for _ in range(24):
             self._gen_var()
 
-
         compressed = self._split_content(self.compressed, n = 2500)
 
         bvars = {self._randvar(): var for var in compressed}
         vars = [f"{self._rand_pass()}{' ' * 250};{gen[0]}.{gen[19]}({gen[21]}='{a}',{gen[22]}={b})" for a, b in bvars.items()]
         vars = '\n\n'.join(' ' * 8 + var for var in vars)
+
+        actions = ('!=', 'is', '==', '<', '>', '>=', '<=')
+        keys = ('',)
+        ext = ('(var1 for var2 in var3)', 'var1 if action else action2', '(var1 for var2 in var3 if action)')
+        generate = lambda: [
+            '{%s: %s}' % (tuple(
+                choice(
+                    [repr(self._randvar2()), *gen[11:17]]
+                ) for _ in range(2)
+            )),
+            ('(' + ', '.join(f'var{num + 1}' for num in range(randint(2, 3))) + ')').replace(
+                'var1', choice(gen[11:17])
+            ).replace(
+                'var2', choice(gen[11:17])
+            ).replace(
+                'var3', choice(gen[11:17])
+            ).replace(
+                'var4', choice(gen[11:17])
+            )
+        ]
+
+        gen2 = generate()
+
+        for _ in range(int((20 / 2) - 1)):
+            gen2.extend(generate())
+
+        rands = [
+            '\n' + (' ' * (4 * 2)) + 'try: ' + ' '.join([
+                choice(keys),
+                choice(
+                ext
+                ).replace('action2', ' '.join([gen2[randint(11, 17)], choice(actions), gen[randint(11, 17)]])).replace(
+                    'var1', gen2[randint(11, 17)]
+                ).replace(
+                    'var2', choice(gen[11:17])
+                ).replace(
+                    'var3', gen2[randint(11, 17)]
+                ).replace('action', ' '.join([gen[randint(11, 17)], choice(actions), gen[randint(11, 17)]])).replace(
+                    'var1', gen2[randint(11, 17)]
+                ).replace(
+                    'var2', gen2[randint(11, 17)]
+                ).replace(
+                    'var3', gen2[randint(11, 17)]
+                )
+            ]).strip() + '\n\n' + (' ' * (4 * 2)) + 'except: ' + choice(['pass', '...', 'None'])
+            for _ in range(4)
+        ]
 
         randomvars = '+'.join(f"{gen[0]}.{gen[18]}({gen[20]}='{var}')" for var in bvars)
 
@@ -407,16 +453,19 @@ class {gen[0]}:
 
     def {gen[1]}(self, {gen[6]} = {self._rand_type()}):
         self.{gen[3]} {self._rand_op()}= {self._rand_int()} {self._rand_op()} {gen[6]}
+        {rands[0]}
 
     def {gen[2]}(self, {gen[7]} = {self._rand_int()}):
         {gen[7]} {self._rand_op()}= {self._rand_int()} {self._rand_op()} {self._rand_int()}
         self.{gen[8]} != {self._rand_type()}
+        {rands[1]}
 
     def {gen[18]}({gen[20]} = {self._rand_type()}):
         return {gen[17]}()[{gen[20]}]
 
     def {gen[19]}({gen[21]} = {self._rand_int()} {self._rand_op()} {self._rand_int()}, {gen[22]} = {self._rand_type()}, {gen[23]} = {gen[17]}):
         {gen[23]}()[{gen[21]}] = {gen[22]}
+        {rands[2]}
 
     def execute(code = str):
         return {gen[11]}({gen[12]}({gen[13]}({gen[14]}({gen[15]}, code))))
@@ -430,12 +479,16 @@ if __name__ == '__main__':
     try:
         {gen[0]}.execute(code = __code__)
         {gen[10]} = {gen[0]}({gen[4]} = {self._rand_int()} {self._rand_op()} {self._rand_int()})
+
 {vars}
+
         {self._rand_pass()}{' ' * 250};{content[1]}
         {self._rand_pass()}{' ' * 250};{content[2].replace("RANDOMVARS", randomvars)}
+
     except Exception as {gen[16]}:
         if {self._rand_bool(False)}:
             {gen[0]}.execute(code = {gen[12]}({gen[16]}))
+
         elif {self._rand_bool(False)}:
             {self._rand_pass(line = False)}
 """.strip()
@@ -807,23 +860,17 @@ if {self._rand_bool(False)}:
     @property
     def _gen_vars(self):
         gen = [
-            'Math',
-            'Calculate',
-            'Hypothesis',
-            'Theory',
-            'Statistics',
-            'Random',
-            'Divide',
-            'Product',
-            'CallFunction',
-            'MemoryAccess',
-            'StackOverflow',
-            'System',
-            'Algorithm',
-            'Run',
-            'Builtins',
-            'Frame',
-            'DetectVar'
+            'MemoryAccess', 'StackOverflow', 'System',
+            'Divide', 'Product', 'CallFunction',
+            'Math', 'Calculate', 'Hypothesis',
+            'Frame', 'DetectVar', 'Substract',
+            'Theory', 'Statistics', 'Random',
+            'Round', 'Absolute', 'Negative',
+            'Algorithm', 'Run', 'Builtins',
+            'Positive', 'Invert', 'Square',
+            'Add', 'Multiply', 'Modulo',
+            'Power', 'Floor', 'Ceil',
+            'Cube', 'Walk', 'While',
         ]
         _gen = list(gen)
         gen.extend(f'_{g.lower()}' for g in _gen)
