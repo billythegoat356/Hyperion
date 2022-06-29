@@ -372,7 +372,7 @@ except:
         self.gen = gen = []
         content = self.content
 
-        for _ in range(24):
+        for _ in range(25):
             self._gen_var()
 
         compressed = self._split_content(self.compressed, n = 2500)
@@ -383,7 +383,7 @@ except:
 
         actions = ('!=', 'is', '==', '<', '>', '>=', '<=')
         keys = ('',)
-        ext = ('(var1 for var2 in var3)', 'var1 if action else action2', '(var1 for var2 in var3 if action)')
+        ext = ('((var1, var2) for var2 in var3)', 'var1 if action else action2', '((var2, var1) for var2 in var3 if action)', '(var1 or var2 if var1 and var2 else ... or (var2, var1))')
         generate = lambda: [
             '{%s: %s}' % (tuple(
                 choice(
@@ -406,29 +406,15 @@ except:
         for _ in range(int((20 / 2) - 1)):
             gen2.extend(generate())
 
+
         rands = [
-            '\n' + (' ' * (4 * 2)) + 'try: ' + ' '.join([
-                choice(keys),
-                choice(
-                ext
-                ).replace('action2', ' '.join([gen2[randint(11, 17)], choice(actions), gen[randint(11, 17)]])).replace(
-                    'var1', gen2[randint(11, 17)]
-                ).replace(
-                    'var2', choice(gen[11:17])
-                ).replace(
-                    'var3', gen2[randint(11, 17)]
-                ).replace('action', ' '.join([gen[randint(11, 17)], choice(actions), gen[randint(11, 17)]])).replace(
-                    'var1', gen2[randint(11, 17)]
-                ).replace(
-                    'var2', gen2[randint(11, 17)]
-                ).replace(
-                    'var3', gen2[randint(11, 17)]
-                )
-            ]).strip() + '\n\n' + (' ' * (4 * 2)) + 'except: ' + choice(['pass', '...', 'None'])
+            '\n' + (' ' * (4 * 2)) + 'try:\n' +  '    ' * 3 + self._rand_gen(ext, keys, gen, gen2, actions) + '\n\n' + (' ' * (4 * 2)) + f'except {self._rand_error()}:\n' + '    ' * 3 + self._rand_gen(ext, keys, gen, gen2, actions) + '\n\n' + (' ' * (4 * 2)) + f'except:\n' + '    ' * 3 + f"{gen[24]}({self._rand_int()} {self._rand_op()} {self._rand_int()}) == {self._rand_type()}"
             for _ in range(4)
         ]
 
         randomvars = '+'.join(f"{gen[0]}.{gen[18]}({gen[20]}='{var}')" for var in bvars)
+        sourcery = "# sourcery skip: collection-to-bool, remove-redundant-boolean, remove-redundant-except-handler"
+
 
         self.content = f"""
 {content[0]}
@@ -444,7 +430,7 @@ __license__ = 'EPL-2.0'
 __code__ = 'print("Hello world!")'
 
 
-{gen[11]}, {gen[12]}, {gen[13]}, {gen[14]}, {gen[15]}, {gen[17]} = exec, str, tuple, map, ord, globals
+{gen[11]}, {gen[12]}, {gen[13]}, {gen[14]}, {gen[15]}, {gen[17]}, {gen[24]} = exec, str, tuple, map, ord, globals, type
 
 class {gen[0]}:
     def __init__(self, {gen[4]}):
@@ -452,10 +438,12 @@ class {gen[0]}:
         self.{gen[1]}({gen[6]}={self._rand_int()})
 
     def {gen[1]}(self, {gen[6]} = {self._rand_type()}):
+        {sourcery}
         self.{gen[3]} {self._rand_op()}= {self._rand_int()} {self._rand_op()} {gen[6]}
         {rands[0]}
 
     def {gen[2]}(self, {gen[7]} = {self._rand_int()}):
+        {sourcery}
         {gen[7]} {self._rand_op()}= {self._rand_int()} {self._rand_op()} {self._rand_int()}
         self.{gen[8]} != {self._rand_type()}
         {rands[1]}
@@ -464,6 +452,7 @@ class {gen[0]}:
         return {gen[17]}()[{gen[20]}]
 
     def {gen[19]}({gen[21]} = {self._rand_int()} {self._rand_op()} {self._rand_int()}, {gen[22]} = {self._rand_type()}, {gen[23]} = {gen[17]}):
+        {sourcery}
         {gen[23]}()[{gen[21]}] = {gen[22]}
         {rands[2]}
 
@@ -859,6 +848,35 @@ if {self._rand_bool(False)}:
                 break
             content = content[n:]
         return ncontent
+
+    def _rand_gen(self, ext, keys, gen, gen2, actions):
+        return ' '.join([
+                choice(keys),
+                choice(
+                ext
+                ).replace('action2', ' '.join([gen2[randint(11, 17)], choice(actions), gen[randint(11, 17)]])).replace(
+                    'var1', gen2[randint(11, 17)]
+                ).replace(
+                    'var2', choice(gen[11:17])
+                ).replace(
+                    'var3', gen2[randint(11, 17)]
+                ).replace('action', ' '.join([gen[randint(11, 17)], choice(actions), gen[randint(11, 17)]])).replace(
+                    'var1', gen2[randint(11, 17)]
+                ).replace(
+                    'var2', gen2[randint(11, 17)]
+                ).replace(
+                    'var3', gen2[randint(11, 17)]
+                )
+            ]).strip()
+    
+    def _rand_error(self):
+        return choice((
+            'OSError',
+            'TypeError',
+            'ArithmeticError',
+            'AssertionError',
+            'AttributeError'
+        ))
 
     @property
     def _gen_vars(self):
