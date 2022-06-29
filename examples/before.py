@@ -1,0 +1,1 @@
+print("discord.gg/plague")
