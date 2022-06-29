@@ -526,6 +526,9 @@ if __name__ == '__main__':
             ''.join(choice(('J','I','L')) for _ in range(randint(17, 25))),
             ''.join(choice(('j','i','l')) for _ in range(randint(17, 25)))
         ))
+    
+    def _randvar2(self):
+        return ''.join(choice('billythegoat356BlueRed') for _ in range(randint(5, 20)))
 
     def _randglob(self):
         return choice((
