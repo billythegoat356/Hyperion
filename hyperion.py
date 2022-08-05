@@ -1,3 +1,5 @@
+import os
+import platform
 from builtins import *
 
 builtglob = list(globals().keys())
@@ -14,7 +16,8 @@ from random import choice, shuffle, randint
 from zlib import compress
 
 
-
+def clear():
+	os.system('clear||cls')
 
 
 class Hyperion:
@@ -142,13 +145,13 @@ class Hyperion:
 
 # https://github.com/billythegoat356/Hyperion
 
-# by billythegoat356 and BlueRed
+# by therealOri, billythegoat356, and BlueRed
 
 
 try:
     if (
         __obfuscator__ != "Hyperion" or
-        __authors__ != ("billythegoat356", "BlueRed") or
+        __authors__ != ("therealOri", "billythegoat356", "BlueRed") or
         __github__ != "https://github.com/billythegoat356/Hyperion" or
         __discord__ != "https://discord.gg/plague" or
         __license__ != "EPL-2.0" or
@@ -422,7 +425,7 @@ from math import prod as {gen[5]}
 
 
 __obfuscator__ = 'Hyperion'
-__authors__ = ('billythegoat356', 'BlueRed')
+__authors__ = ('therealOri', 'billythegoat356', 'BlueRed')
 __github__ = 'https://github.com/billythegoat356/Hyperion'
 __discord__ = 'https://discord.gg/plague'
 __license__ = 'EPL-2.0'
@@ -517,7 +520,7 @@ if __name__ == '__main__':
         ))
     
     def _randvar2(self):
-        return ''.join(choice('billythegoat356BlueRed') for _ in range(randint(5, 20)))
+        return ''.join(choice('therealOriBillythegoat356BlueRed') for _ in range(randint(5, 20)))
 
     def _randglob(self):
         return choice((
@@ -960,14 +963,18 @@ def main():
     print()
     print(Colorate.Diagonal(Colors.DynamicMIX((purple, dark)), Center.XCenter(banner)))
     print('\n')
-    file = input(stage(f"Drag the file you want to obfuscate {dark}-> {Col.reset}", "?", col2 = bpurple)).replace('"','').replace("'","")
+    file_path = input(stage(f"Drag the file you want to obfuscate {dark}-> {Col.reset}", "?", col2 = bpurple)).replace('\\', ' ').strip().replace('"','').replace("'","")
     print('\n')
 
 
     try:
-        with open(file, mode='rb') as f:
+        with open(file_path, mode='rb') as f:
             script = f.read().decode('utf-8')
-        filename = file.split('\\')[-1]
+        if platform.system() == 'Windows':
+            filename = file_path.split('\\')[-1]
+        if platform.system() == 'Linux' or platform.system() == 'Darwin':
+            filename = file_path.split('/')[-1]
+
     except:
         input(f" {Col.Symbol('!', light, dark)} {Col.light_red}Invalid file!{Col.reset}")
         exit()
@@ -991,10 +998,13 @@ def main():
         f.write(script)
     
     print('\n')
+    print(stage(f'Press "Enter" to exit...{light}{bpurple}.{Col.reset}', "!!", col2 = bpurple))
     getpass(stage(f"Obfuscation completed succesfully in {light}{now}s{bpurple}.{Col.reset}", "?", col2 = bpurple))
     # dire aussi l ancienne et nouvelle taille du fichier
 
 
 
 if __name__ == '__main__':
+    clear()
     main()
+    clear()
