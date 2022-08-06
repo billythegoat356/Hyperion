@@ -1,4 +1,3 @@
-import os
 import platform
 from builtins import *
 
@@ -14,10 +13,6 @@ from re import findall
 from random import choice, shuffle, randint
 
 from zlib import compress
-
-
-def clear():
-	os.system('clear||cls')
 
 
 class Hyperion:
@@ -1005,6 +1000,6 @@ def main():
 
 
 if __name__ == '__main__':
-    clear()
+    System.Clear()
     main()
-    clear()
+    System.Clear()
