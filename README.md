@@ -16,7 +16,7 @@ Hyperion is the most powerful fully Python obfuscator for Python scripts,
 <br><br>
 It allows you to obfuscate your script with more than 10 layers, while keeping it
 <br>
-very compact (one file) and executable on any os/python version.
+very compact (one file) and executable on any os/python version. (This fork makes the TUI actually useable and not broken)
 <br><br>
 You can also use the <a href="https://obf.plague.fun" target="_blank">web</a> version of Hyperion.
 <br><br><br>
@@ -32,7 +32,7 @@ You can also use the <a href="https://obf.plague.fun" target="_blank">web</a> ve
 <p align="center"><strong><i>In order for the program to work, you have to install these ressources:</i></strong</p>
 
 <br><br>
-* <a href="https://www.python.org/ftp/python/3.9.13/python-3.9.13-amd64.exe">Python3</a>
+* <a href="https://www.python.org/ftp/python/3.10.6/python-3.10.6-amd64.exe">Python3</a>
 * `pip install -U -r requirements.txt`
 <br><br>
 
