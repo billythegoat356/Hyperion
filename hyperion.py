@@ -974,7 +974,7 @@ def main(file=None, destiny=None, skiprenaming=None, skipchunks=None, rename=Tru
         destiny = input(stage(f"Destiny of obfuscated file {dark}-> {Col.reset}", "?", col2 = bpurple)).strip()
         print()
     try:
-        file = file.replace('"','').replace("'","").strip()
+        file = os.path.abspath(file.replace('"','').replace("'","").strip())
         with open(file, mode='rb') as f:
             script = f.read().decode('utf-8')
         if os.name == 'nt':
@@ -983,6 +983,7 @@ def main(file=None, destiny=None, skiprenaming=None, skipchunks=None, rename=Tru
             filename = file.split('/')[-1]
     except Exception:
         input(f" {Col.Symbol('!', light, dark)} {Col.light_red}Invalid file!{Col.reset}")
+        print()
         exit()
     if skiprenaming is None:
         skiprenaming = input(stage(f"Skip the renaming of libraries and variables {dark}[{light}y{dark}/{light}n{dark}] -> {Col.reset}", "?")).replace('"','').replace("'","") == 'y'
@@ -1019,8 +1020,9 @@ def main(file=None, destiny=None, skiprenaming=None, skipchunks=None, rename=Tru
                 os.mkdir(root)
         with open(destiny, mode='w') as f:
             f.write(script)
-    except Exception as e:
+    except Exception:
         input(f" {Col.Symbol('!', light, dark)} {Col.light_red}Invalid destiny!{Col.reset}")
+        print()
         exit()
     print(stage(f"Obfuscation completed succesfully in {light}{now}s{bpurple}.{Col.reset}", "?", col2 = bpurple))
     print()
