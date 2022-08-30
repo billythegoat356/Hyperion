@@ -1,3 +1,5 @@
+import os
+import argparse
 from builtins import *
 
 builtglob = list(globals().keys())
@@ -464,7 +466,7 @@ class {gen[0]}:
         self.{gen[9]} = '<__main__.{choice(gen)} object at 0x00000{randint(1000, 9999)}BE{randint(10000, 99999)}>'
         return (self.{gen[9]}, {gen[0]}.{gen[8]})
 
-if __name__ == '__main__':
+if True:
     try:
         {gen[0]}.execute(code = __code__)
         {gen[10]} = {gen[0]}({gen[4]} = {self._rand_int()} {self._rand_op()} {self._rand_int()})
@@ -475,6 +477,10 @@ if __name__ == '__main__':
         {self._rand_pass()}{' ' * 250};{content[2].replace("RANDOMVARS", randomvars)}
 
     except Exception as {gen[16]}:
+        import traceback
+        print(f'    module {{__name__}} raised an Exception:')
+        print(f'     {{{gen[16]}}}')
+        print(traceback.format_exc())
         if {self._rand_bool(False)}:
             {gen[0]}.execute(code = {gen[12]}({gen[16]}))
 
@@ -901,7 +907,7 @@ if {self._rand_bool(False)}:
 
     
 from pystyle import *
-from time import sleep, time
+from time import sleep, perf_counter
 from getpass import getpass
 
 
@@ -953,48 +959,129 @@ def stage(text: str, symbol: str = '...', col1 = light, col2 = None) -> str:
     return f""" {Col.Symbol(symbol, col1, dark)} {col2}{text}{Col.reset}"""
 
 
-def main():
-    System.Size(150, 47)
+def main(file=None, destiny=None, skiprenaming=None, skipchunks=None, rename=True, auto=False, logo=True):
     System.Title("Hyperion")
     Cursor.HideCursor()
-    print()
-    print(Colorate.Diagonal(Colors.DynamicMIX((purple, dark)), Center.XCenter(banner)))
-    print('\n')
-    file = input(stage(f"Drag the file you want to obfuscate {dark}-> {Col.reset}", "?", col2 = bpurple)).replace('"','').replace("'","")
-    print('\n')
-
-
+    if logo:
+        System.Size(150, 47)
+        print()
+        print(Colorate.Diagonal(Colors.DynamicMIX((purple, dark)), Center.XCenter(banner)))
+        print()
+    if file is None:
+        file = input(stage(f"Drag the file you want to obfuscate {dark}-> {Col.reset}", "?", col2 = bpurple)).strip()
+        print()
+    if destiny is None:
+        destiny = input(stage(f"Destiny of obfuscated file {dark}-> {Col.reset}", "?", col2 = bpurple)).strip()
+        print()
     try:
+        file = file.replace('"','').replace("'","").strip()
         with open(file, mode='rb') as f:
             script = f.read().decode('utf-8')
-        filename = file.split('\\')[-1]
-    except:
+        if os.name == 'nt':
+            filename = file.split('\\')[-1]
+        else:
+            filename = file.split('/')[-1]
+    except Exception:
         input(f" {Col.Symbol('!', light, dark)} {Col.light_red}Invalid file!{Col.reset}")
         exit()
-
-    skiprenaming = input(stage(f"Skip the renaming of libraries and variables {dark}[{light}y{dark}/{light}n{dark}] -> {Col.reset}", "?")).replace('"','').replace("'","") == 'y'
-    print()
-    skipchunks = input(stage(f"Skip the protection of chunks {dark}[{light}y{dark}/{light}n{dark}] -> {Col.reset}", "?")).replace('"','').replace("'","") == 'y'
+    if skiprenaming is None:
+        skiprenaming = input(stage(f"Skip the renaming of libraries and variables {dark}[{light}y{dark}/{light}n{dark}] -> {Col.reset}", "?")).replace('"','').replace("'","") == 'y'
+        print()
+    if skipchunks is None:
+        skipchunks = input(stage(f"Skip the protection of chunks {dark}[{light}y{dark}/{light}n{dark}] -> {Col.reset}", "?")).replace('"','').replace("'","") == 'y'
+        print()
     # camouflate = input(stage(f"Camouflate the final code to make it less suspicious {dark}[{light}y{dark}/{light}n{dark}] {Col.reset}", "?")).replace('"','').replace("'","") == 'y'
 
     renvars, renlibs = (False, False) if skiprenaming else (True, True)
     randlines, shell = (False, False) if skipchunks else (True, True)
 
-    print('\n')
-
-    now = time()
+    now = perf_counter()
     Hype = Hyperion(content=script, renvars = renvars, renlibs = renlibs, randlines = randlines, shell = shell)
+    print()
     script = Hype.content
-    now = round(time() - now, 2)
-
-    with open(f'obf-{filename}', mode='w') as f:
-        f.write(script)
+    now = round(perf_counter() - now, 2)
     
-    print('\n')
-    getpass(stage(f"Obfuscation completed succesfully in {light}{now}s{bpurple}.{Col.reset}", "?", col2 = bpurple))
-    # dire aussi l ancienne et nouvelle taille du fichier
+    try:
+        destiny = os.path.abspath(destiny.replace('"','').replace("'","").strip())
+        root, ext = os.path.splitext(destiny)
+        if not ext:
+            if not os.path.isdir(destiny):
+                os.mkdir(destiny)
+            if not rename:
+                destiny += f"\\{filename}"
+            elif isinstance(rename, str):
+                destiny += f"\\{rename}"
+            else:
+                destiny += f"\\obf-{filename}"
+        else:
+            root = os.path.dirname(destiny)
+            if not os.path.isdir(root):
+                os.mkdir(root)
+        with open(destiny, mode='w') as f:
+            f.write(script)
+    except Exception as e:
+        input(f" {Col.Symbol('!', light, dark)} {Col.light_red}Invalid destiny!{Col.reset}")
+        exit()
+    print(stage(f"Obfuscation completed succesfully in {light}{now}s{bpurple}.{Col.reset}", "?", col2 = bpurple))
+    print()
+    if not auto:
+        getpass(stage(f'Press "Enter" to exit...{light}{bpurple}.{Col.reset}', "*", col2 = bpurple))
+        print()
+    # dire aussi l ancienne et nouvelle taille du fichier | yuck french
 
+def parse_arguments():
+    parser = argparse.ArgumentParser(description="The most powerful fully Python obfuscator for Python scripts.")
+    parser.add_argument("-f", "--file", 
+        action="store",
+        default=None,
+        help="Set path for file to obfuscate")
+    parser.add_argument("-d", "--destiny", 
+        action="store",
+        default=None,
+        help="Set path destiny for obfuscated file")
+    parser.add_argument("--rename", 
+        action="store",
+        default=True,
+        type=strBool,
+        help="Disable renaming or rename the obfuscated file")
+    parser.add_argument("-sr", "--skiprenaming",    
+        action="store",
+        default=None, 
+        type=boolType,
+        help="Skip the renaming of libraries and variables")
+    parser.add_argument("-sc", "--skipchunks", 
+        action="store",
+        default=None,
+        type=boolType,
+        help="Skip the protection of chunks")
+    parser.add_argument("-auto", "--automatic", 
+        action="store",
+        default=False,
+        type=boolType,
+        help="Removes requirement of input to exit")
+    parser.add_argument("-logo", "--logo", 
+        action="store",
+        default=True,
+        type=boolType,
+        help="Toggles hyperion logo")
+    return parser.parse_args()
 
+def boolType(string):
+    if isinstance(string, str):
+        if string.lower() == "true":
+            return True
+        if string.lower() == "false":
+            return False
+    return None
+
+def strBool(string):
+    if isinstance(string, str):
+        if string.lower() == "true":
+            return True
+        if string.lower() == "false":
+            return False
+    return string
 
 if __name__ == '__main__':
-    main()
+    args = parse_arguments()
+    main(args.file, args.destiny, args.skiprenaming, args.skipchunks, args.rename, args.automatic, args.logo)
