@@ -199,16 +199,6 @@ if __name__ == '__main__':
 <br><br>
   
 -----
-  
-### <p align="center">🪓 Deobfuscators 🪓</p>
-
-<p align="center"><strong>I did not check the code of the following repositories, some of them might be viruses.</strong></p>
-
-<br><br>
-* None... yet :)
-<br><br>
-  
------
 
 ### <p align="center">📌 Disclaimer 📌</p>
 
