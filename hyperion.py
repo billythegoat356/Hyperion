@@ -31,10 +31,10 @@ class Hyperion:
         obfcontent: Use this if you want to obfuscate the content of the variables
         >>> # [!!!] Be aware that this can cause some bugs on very complex scripts, but generally it should work [!!!]
 
-        renlibs: Use this if you want to obfuscate the content of the variables
+        renlibs: Use this if you want to redefine the libraries
         >>> # [!!!] Be aware that this can cause some bugs on very complex scripts, but generally it should work [!!!]
 
-        renvars: Use this if you want to obfuscate the content of the variables
+        renvars: Use this if you want to redefine the variables
         >>> # [!!!] Be aware that this can cause some bugs on very complex scripts, but generally it should work [!!!]
 
         addbuiltins: Use this to also rename the builtins only if you haven't used the same vars
