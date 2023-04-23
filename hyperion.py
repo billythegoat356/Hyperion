@@ -2,7 +2,12 @@ from builtins import *
 
 builtglob = list(globals().keys())
 
+import random
+import string
 
+from pystyle import *
+from time import sleep, time
+from getpass import getpass
 
 from binascii import hexlify
 from tokenize import tokenize, untokenize, TokenInfo
@@ -13,13 +18,18 @@ from random import choice, shuffle, randint
 
 from zlib import compress
 
+def MSG():
+    msgs = ["Hello world!", "Are you having fun trying to deobf?", "Skid protection 4 the win", "Cant read the code and make a deobf? That sucks lol", "Imagine thinking __code__ is useful.", "Skids are confused!!!", "imagine", "Omega Ώ", "Lol", "Skids mad!!!", "Fo Sho", 'u_r_skid = ["Not a joke"]; for m in u_r_skid: print(f"you just wasted a few moments reading this useless code L\n{m}");']
+    
+    t = choice(msgs)
 
+    return t
 
-
+message = MSG() # Prevents skid check from thinking your a skid.
 
 class Hyperion:
 
-    def __init__(self, content: str, clean = True, obfcontent = True, renlibs = True, renvars = True, addbuiltins = True, randlines = True, shell = True, camouflate = True, safemode = True, ultrasafemode = False) -> None:
+    def __init__(self, content: str, clean = True, obfcontent = True, renlibs = True, renvars = True, addbuiltins = True, randlines = True, shell = True, camouflate = True, safemode = True, ultrasafemode = False, length = 50) -> None:
 
         r"""
         Use Safe Modes only if you have errors with your obfuscated script [!!!]
@@ -49,11 +59,13 @@ class Hyperion:
         camouflate: Use this to camouflate the final script
         >>> # [!!!] No bugs [!!!]
 
-
         safemode: Use this if you used positional arguments / predefined arguments in your functions
         >>> # [!!!] No bugs [!!!]
 
         ultrasafemode: Use this to skip the layers most likely to cause errors
+        >>> # [!!!] No bugs [!!!]
+        
+        length: The length of the random vars
         >>> # [!!!] No bugs [!!!]
         """
 
@@ -69,6 +81,8 @@ class Hyperion:
 
         self.add_imports = []
         self.impcontent2 = []
+        
+        self.length = length
 
         self.safemode = safemode
 
@@ -152,7 +166,7 @@ try:
         __github__ != "https://github.com/billythegoat356/Hyperion" or
         __discord__ != "https://discord.gg/plague" or
         __license__ != "EPL-2.0" or
-        __code__ != 'print("Hello world!")'
+        __code__ != '{message}'
     ):
         int('skid')
 except:
@@ -213,19 +227,22 @@ except:
         return True
 
     def RenameVars(self):
-        f = BytesIO(self.content.encode('utf-8'))
-        self.tokens = list(tokenize(f.readline))
+        f = BytesIO(self.content.encode('utf-8')) # encode to utf-8
+        self.tokens = list(tokenize(f.readline)) # read content and list results
 
         # input('\n'.join(str(tok) for tok in self.tokens))
 
+        # DATA
         strings = {}
 
         ntokens = []
 
         passed = []
+        
+        # Loop through all results
 
         for token in self.tokens:
-            string, type = token.string, token.type
+            string, type = token.string, token.type # set the data to the result text and type
 
             
             if type == 1:
@@ -249,53 +266,55 @@ except:
                 else:
                     passed.append(string)
             
-            ntokens.append(TokenInfo(type, string, token.start, token.end, token.line))
+            ntokens.append(TokenInfo(type, string, token.start, token.end, token.line)) # parses the TokenInfo() into array with needed info
             
 
 
-        self.content = untokenize(ntokens).decode('utf-8')
+        self.content = untokenize(ntokens).decode('utf-8') # revert to old code from tokenized data
  
     def ObfContent(self):
-        f = BytesIO(self.content.encode('utf-8'))
-        self.tokens = list(tokenize(f.readline))
+        f = BytesIO(self.content.encode('utf-8')) # Encode to utf-8
+        self.tokens = list(tokenize(f.readline)) # Tokenize data after reading
 
         # input('\n'.join(str(tok) for tok in self.tokens))
 
         ntokens = []
+
+        # Loop through
 
         for token in self.tokens:
             string, type = token.string, token.type
 
             if type == 1:
                 if string in ('True', 'False'):
-                    string = self._obf_bool(string)
+                    string = self._obf_bool(string) # obf bool values
 
             elif type == 2:
-                string = self._obf_int(string)
+                string = self._obf_int(string) # obf string values
 
             elif type == 3:
-                string = self._obf_str(string)
+                string = self._obf_str(string) # obf string values
 
-            ntokens.append(TokenInfo(type, string, token.start, token.end, token.line))
+            ntokens.append(TokenInfo(type, string, token.start, token.end, token.line)) # Put TokenInfo() data into table
 
         self.ostrings = self.strings
 
         self.lambdas = []
-        self._add_lambdas()
+        self._add_lambdas() # make lambdas
 
         strings = [f"{self.vars}()[{self._protect(var)}]={value}" for var, value in self.strings.items()]
         shuffle(strings)
 
         self.strings = strings
 
-        self.content = untokenize(ntokens).decode('utf-8')
+        self.content = untokenize(ntokens).decode('utf-8') # revert to normal 
 
     def CleanCode(self):
-            
-            self.RemoveComments()
-            self.CompressCode()
 
-    def RandLines(self):
+            self.RemoveComments() # ...
+            self.CompressCode() # compresses the code and removes formating
+
+    def RandLines(self): # junk 
         content = []
         lines = self.content.splitlines()
     
@@ -321,6 +340,7 @@ except:
         self.content = '\n'.join(chunks)
         
     def Organise(self):
+
         gd_vars = [f"{self.globals}()[{self._protect(self.getattr, basic=True, )}]=getattr", f"{self.globals}()[{self._protect(self.dir, basic=True)}]=dir"]
         shuffle(gd_vars)
         exec_var = f"{self.globals}()[{self._protect(self.exec)}]={self._protect_built('exec')}"
@@ -365,10 +385,14 @@ except:
 
         all_keys.update(keys2)
     
-        self.content = ['from builtins import *', ','.join(all_keys.values()) + '=' + ','.join(all_keys.keys()), exec_content]
+        self.content = ['from builtins import *', ','.join(all_keys.values()) + '=' + ','.join(all_keys.keys()), exec_content] # builds result
 
 
+    # hiding
+    
+    # Note: gen[x] is a random gened
     def Camouflate(self):
+
         self.gen = gen = []
         content = self.content
 
@@ -391,13 +415,13 @@ except:
                 ) for _ in range(2)
             )),
             ('(' + ', '.join(f'var{num + 1}' for num in range(randint(2, 3))) + ')').replace(
-                'var1', choice(gen[11:17])
+                'var1', choice(gen[11:17]) # chooses random from 11 > 17
             ).replace(
-                'var2', choice(gen[11:17])
+                'var2', choice(gen[11:17]) # chooses random from 11 > 17
             ).replace(
-                'var3', choice(gen[11:17])
+                'var3', choice(gen[11:17]) # chooses random from 11 > 17
             ).replace(
-                'var4', choice(gen[11:17])
+                'var4', choice(gen[11:17]) # chooses random from 11 > 17
             )
         ]
 
@@ -427,7 +451,7 @@ __github__ = 'https://github.com/billythegoat356/Hyperion'
 __discord__ = 'https://discord.gg/plague'
 __license__ = 'EPL-2.0'
 
-__code__ = 'print("Hello world!")'
+__code__ = '{message}'
 
 
 {gen[11]}, {gen[12]}, {gen[13]}, {gen[14]}, {gen[15]}, {gen[17]}, {gen[24]} = exec, str, tuple, map, ord, globals, type
@@ -491,11 +515,8 @@ if __name__ == '__main__':
         def __init__(self):
             super().__init__("Star Import is forbidden, please update your script")
 
-
-
     # All
 
-    
     def _verify_lin(self, content):
         return all(lin.strip() not in ['(','[','{','}',']',')'] for lin in content.splitlines())
 
@@ -503,6 +524,26 @@ if __name__ == '__main__':
         return ''.join(f"\\x{hexlify(char.encode('utf-8')).decode('utf-8')}" for char in var)
 
     def _randvar(self):
+        """
+        Generates random string based on a length
+        """
+        letters = string.ascii_letters + string.digits
+        result = ''
+        while True:
+            char = random.choice(letters)
+            if char.isalpha():
+                char = char.upper() if random.random() < 0.5 else char.lower()
+                result += char
+                break
+        for i in range(self.length - 1):
+            char = random.choice(letters)
+            if char.isalpha():
+                char = char.upper() if random.random() < 0.5 else char.lower()
+            result += char
+
+        return result
+
+        """
         return choice((
             ''.join(choice(('l','I')) for _ in range(randint(17, 25))),
             'O' + ''.join(choice(('O','0','o')) for _ in range(randint(17, 25))),
@@ -515,6 +556,8 @@ if __name__ == '__main__':
             ''.join(choice(('J','I','L')) for _ in range(randint(17, 25))),
             ''.join(choice(('j','i','l')) for _ in range(randint(17, 25)))
         ))
+        """
+
     
     def _randvar2(self):
         return ''.join(choice('billythegoat356BlueRed') for _ in range(randint(5, 20)))
@@ -897,14 +940,6 @@ if {self._rand_bool(False)}:
         gen.extend(f'_{g.lower()}' for g in _gen)
         return gen
 
-
-
-    
-from pystyle import *
-from time import sleep, time
-from getpass import getpass
-
-
 text = r"""
 
  ▄  █ ▀▄    ▄ █ ▄▄  ▄███▄   █▄▄▄▄ ▄█ ████▄    ▄         
@@ -942,7 +977,6 @@ light = Col.light_gray
 purple = Colors.StaticMIX((Col.purple, Col.blue))
 bpurple = Colors.StaticMIX((Col.purple, Col.blue, Col.blue))
 
-
 def p(text):
     # sleep(0.05)
     return print(stage(text))
@@ -952,7 +986,6 @@ def stage(text: str, symbol: str = '...', col1 = light, col2 = None) -> str:
         col2 = light if symbol == '...' else purple
     return f""" {Col.Symbol(symbol, col1, dark)} {col2}{text}{Col.reset}"""
 
-
 def main():
     System.Size(150, 47)
     System.Title("Hyperion")
@@ -961,13 +994,12 @@ def main():
     print(Colorate.Diagonal(Colors.DynamicMIX((purple, dark)), Center.XCenter(banner)))
     print('\n')
     file = input(stage(f"Drag the file you want to obfuscate {dark}-> {Col.reset}", "?", col2 = bpurple)).replace('"','').replace("'","")
+    # Unused # filename = file.split('\\')[-1]
     print('\n')
-
-
+    
     try:
         with open(file, mode='rb') as f:
             script = f.read().decode('utf-8')
-        filename = file.split('\\')[-1]
     except:
         input(f" {Col.Symbol('!', light, dark)} {Col.light_red}Invalid file!{Col.reset}")
         exit()
@@ -984,17 +1016,21 @@ def main():
 
     now = time()
     Hype = Hyperion(content=script, renvars = renvars, renlibs = renlibs, randlines = randlines, shell = shell)
-    script = Hype.content
+    script = Hype.content if Hype.content is not None else 'Was Returned as a None Object' # script = Hype.content and not None or 'Was Returned as a None Object'
     now = round(time() - now, 2)
-
-    with open(f'obf-{filename}', mode='w') as f:
-        f.write(script)
     
+    try:
+        with open(file, mode='w') as f:
+            f.write(script)
+            
+    except Exception as e:
+        print(e)
+        input(f" {Col.Symbol('!', light, dark)} {Col.light_red}Error During Writing!{Col.reset}")
+
     print('\n')
+
     getpass(stage(f"Obfuscation completed succesfully in {light}{now}s{bpurple}.{Col.reset}", "?", col2 = bpurple))
     # dire aussi l ancienne et nouvelle taille du fichier
-
-
 
 if __name__ == '__main__':
     main()
