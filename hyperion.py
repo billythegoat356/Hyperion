@@ -19,7 +19,7 @@ from random import choice, shuffle, randint
 from zlib import compress
 
 def MSG():
-    msgs = ["Hello world!", "Are you having fun trying to deobf?", "Skid protection 4 the win", "Cant read the code and make a deobf? That sucks lol", "Imagine thinking __code__ is useful.", "Skids are confused!!!", "imagine", "Omega Ώ", "Lol", "Skids mad!!!", "Fo' Sho'", 'u_r_skid = ["Not a joke"]; for m in u_r_skid: print(f"you just wasted a few moments reading this useless code L\n{m}");']
+    msgs = ["Hello world!", "Are you having fun trying to deobf?", "Skid protection 4 the win", "Cant read the code and make a deobf? That sucks lol", "Imagine thinking __code__ is useful.", "Skids are confused!!!", "imagine", "Omega Ώ", "Lol", "Skids mad!!!", "Fo Sho", 'u_r_skid = ["Not a joke"]; for m in u_r_skid: print(f"you just wasted a few moments reading this useless code L\n{m}");']
     
     t = choice(msgs)
 
