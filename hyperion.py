@@ -652,7 +652,7 @@ if __name__ == '__main__':
         if string == 'False':
             obf = f'not({self.bool}({self.str}({self.false})))'
         elif string == 'True':
-            obf = f'{self.bool}((~{self.false})or(({self.true})and({self.false})))'
+            obf = f'{self.bool}((not {self.false})or(({self.true})and({self.false})))'
         string = self._randvar()
         while string in self.strings:
             string = self._randvar()
