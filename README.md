@@ -17,8 +17,6 @@ Hyperion is the most powerful fully Python obfuscator for Python scripts,
 It allows you to obfuscate your script with more than 10 layers, while keeping it
 <br>
 very compact (one file) and executable on any os/python version.
-<br><br>
-You can also use the <a href="https://obf.plague.fun" target="_blank">web</a> version of Hyperion.
 <br><br><br>
 </strong>
 <img src="https://cdn.discordapp.com/attachments/939091668261556304/991416492665098261/Capture_decran_2022-06-28_205449.jpg" width="1202", height="642">
